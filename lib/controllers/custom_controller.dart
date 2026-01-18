@@ -1,17 +1,16 @@
-// lib/controllers/custom_controller.dart
 import 'package:al_zikr/models/zikr_items.dart';
+import 'package:flutter/foundation.dart';
 
-import 'counter_controller.dart';
-
-class CustomController {
-  final CounterController counter = CounterController();
+class CustomController extends ChangeNotifier {
   final List<ZikrItem> zikrs = [];
 
-  void addZikr(String text, int target) {
-    zikrs.add(ZikrItem(text: text, target: target));
+  void addZikr(ZikrItem item) {
+    zikrs.add(item);
+    notifyListeners();
   }
 
-  void startCounting() {
-    counter.setZikrs(zikrs);
+  void removeAt(int index) {
+    zikrs.removeAt(index);
+    notifyListeners();
   }
 }

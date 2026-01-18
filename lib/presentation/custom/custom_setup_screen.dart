@@ -1,81 +1,75 @@
-// lib/presentation/custom/custom_setup_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../controllers/custom_controller.dart';
+import '../../controllers/counter_controller.dart';
 import '../../widgets/add_zikr_dialog.dart';
 import '../../widgets/zikr_card.dart';
-import '../../core/constants/colors.dart';
-import '../../core/responsive/responsive_layout.dart';
 import 'custom_counter_screen.dart';
 
-class CustomSetupScreen extends StatefulWidget {
+class CustomSetupScreen extends StatelessWidget {
   const CustomSetupScreen({super.key});
 
   @override
-  State<CustomSetupScreen> createState() => _CustomSetupScreenState();
-}
-
-class _CustomSetupScreenState extends State<CustomSetupScreen> {
-  final CustomController _controller = CustomController();
-
-  void _addZikr() {
-    showDialog(
-      context: context,
-      builder: (_) => AddZikrDialog(onAdd: (zikr) => _controller.addZikr(zikr.text, zikr.target)),
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => CustomController(),
+      child: const _CustomSetupBody(),
     );
   }
+}
+
+class _CustomSetupBody extends StatelessWidget {
+  const _CustomSetupBody();
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<CustomController>();
+
     return Scaffold(
-      backgroundColor: AppColors.primaryBlack,
+      appBar: AppBar(title: const Text('CUSTOM')),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addZikr,
-        backgroundColor: AppColors.accentGreen,
-        child: const Icon(Icons.add, color: AppColors.primaryBlack),
+        onPressed: () => showDialog(
+          context: context,
+          builder: (_) => AddZikrDialog(
+            onAdd: (item) => controller.addZikr(item),
+          ),
+        ),
+        child: const Icon(Icons.add),
       ),
       body: Column(
         children: [
           Expanded(
-            child: _controller.zikrs.isEmpty
-                ? Center(
-                    child: Text(
-                      'Add your first Zikr',
-                      style: TextStyle(color: AppColors.textWhite.withOpacity(0.7)),
-                    ),
-                  )
+            child: controller.zikrs.isEmpty
+                ? const Center(child: Text('No Zikr yet'))
                 : ListView.builder(
-                    padding: const EdgeInsets.all(24),
-                    itemCount: _controller.zikrs.length,
-                    itemBuilder: (context, index) {
-                      final zikr = _controller.zikrs[index];
+                    padding: const EdgeInsets.all(16),
+                    itemCount: controller.zikrs.length,
+                    itemBuilder: (_, i) {
+                      final z = controller.zikrs[i];
                       return ZikrCard(
-                        title: '${zikr.text} (${zikr.target}x)',
-                        icon: Icons.check,
-                        isDesktop: ResponsiveLayout.isDesktop(context),
-                        onTap: () {}, // List only
+                        title: '${z.text} (${z.target}x)',
+                        icon: Icons.drag_handle,
+                        onTap: () {},
                       );
                     },
                   ),
           ),
           Padding(
-            padding: const EdgeInsets.all(24),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _controller.zikrs.isNotEmpty
-                    ? () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CustomCounterScreen(controller: _controller),
-                          ),
-                        )
-                    : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accentGreen,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: const Text('Start Counting', style: TextStyle(color: AppColors.primaryBlack, fontSize: 18)),
-              ),
+            padding: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              onPressed: controller.zikrs.isEmpty
+                  ? null
+                  : () {
+                      final counter = CounterController()
+                        ..setZikrs(controller.zikrs);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CustomCounterScreen(counter: counter),
+                        ),
+                      );
+                    },
+              child: const Text('START'),
             ),
           ),
         ],

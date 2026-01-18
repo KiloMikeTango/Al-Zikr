@@ -1,12 +1,24 @@
-// lib/controllers/preset_controller.dart
 import 'package:al_zikr/models/presnt_model.dart';
-
+import 'package:flutter/foundation.dart';
 import '../core/services/storage_service.dart';
 
-class PresetController {
-  Future<List<PresetModel>> loadPresets() => StorageService.getPresets();
+class PresetController extends ChangeNotifier {
+  List<PresetModel> presets = [];
 
-  Future<void> savePreset(PresetModel preset) => StorageService.savePreset(preset);
+  Future<void> load() async {
+    presets = await StorageService.loadPresets();
+    notifyListeners();
+  }
 
-  Future<void> deletePreset(int index) => StorageService.deletePreset(index);
+  Future<void> addPreset(PresetModel preset) async {
+    presets.add(preset);
+    await StorageService.savePresets(presets);
+    notifyListeners();
+  }
+
+  Future<void> deletePreset(int index) async {
+    presets.removeAt(index);
+    await StorageService.savePresets(presets);
+    notifyListeners();
+  }
 }

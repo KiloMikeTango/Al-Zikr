@@ -1,76 +1,84 @@
-// lib/presentation/presets/presets_screen.dart
 import 'package:al_zikr/models/presnt_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../controllers/preset_controller.dart';
+import '../../controllers/counter_controller.dart';
 import '../../widgets/zikr_card.dart';
-import '../../core/constants/colors.dart';
+import '../../widgets/add_zikr_dialog.dart';
+import '../custom/custom_counter_screen.dart';
 
-class PresetsScreen extends StatefulWidget {
+class PresetsScreen extends StatelessWidget {
   const PresetsScreen({super.key});
 
   @override
-  State<PresetsScreen> createState() => _PresetsScreenState();
-}
-
-class _PresetsScreenState extends State<PresetsScreen> {
-  final PresetController _controller = PresetController();
-
-  @override
-  void initState() {
-    super.initState();
-    _loadPresets();
-  }
-
-  Future<void> _loadPresets() async {
-    final presets = await _controller.loadPresets();
-    setState(() {});
-  }
-
-  void _createPreset() {
-    // Simplified: create preset name input then add zikrs similar to custom
-    // For full impl, use multi-step dialog
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Preset creation dialog would go here')),
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => PresetController()..load(),
+      child: const _PresetsBody(),
     );
   }
+}
+
+class _PresetsBody extends StatelessWidget {
+  const _PresetsBody();
 
   @override
   Widget build(BuildContext context) {
+    final c = context.watch<PresetController>();
+
     return Scaffold(
-      backgroundColor: AppColors.primaryBlack,
-      appBar: AppBar(
-        title: const Text('MY PRESETS', style: TextStyle(color: AppColors.textWhite)),
-        backgroundColor: Colors.transparent,
-      ),
+      appBar: AppBar(title: const Text('MY PRESETS')),
       floatingActionButton: FloatingActionButton(
-        onPressed: _createPreset,
-        backgroundColor: AppColors.accentGreen,
-        child: const Icon(Icons.add, color: AppColors.primaryBlack),
+        onPressed: () async {
+          final name = await _askName(context);
+          if (name == null || name.isEmpty) return;
+
+          final zikrs = <PresetModel>[];
+          // For brevity use single dialog; you can extend to multi-zikr builder
+          final items = <PresetModel>[];
+        },
+        child: const Icon(Icons.add),
       ),
-      body: FutureBuilder<List<PresetModel>>(
-        future: _controller.loadPresets(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
-          final presets = snapshot.data!;
-          return ListView.builder(
-            padding: const EdgeInsets.all(24),
-            itemCount: presets.length,
-            itemBuilder: (context, index) {
-              final preset = presets[index];
-              return ZikrCard(
-                title: preset.name,
-                icon: Icons.play_arrow,
-                isDesktop: MediaQuery.of(context).size.width > 800,
-                onTap: () {
-                  // Navigate to preset counter
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Play preset: ${preset.name}')),
-                  );
-                },
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: c.presets.length,
+        itemBuilder: (_, i) {
+          final preset = c.presets[i];
+          return ZikrCard(
+            title: preset.name,
+            icon: Icons.play_arrow,
+            onTap: () {
+              final counter = CounterController()..setZikrs(preset.zikrs);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => CustomCounterScreen(counter: counter),
+                ),
               );
             },
           );
         },
+      ),
+    );
+  }
+
+  Future<String?> _askName(BuildContext context) async {
+    final controller = TextEditingController();
+    return showDialog<String>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Preset name'),
+        content: TextField(controller: controller),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: const Text('OK'),
+          ),
+        ],
       ),
     );
   }
