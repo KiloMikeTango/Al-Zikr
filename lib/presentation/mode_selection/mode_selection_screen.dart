@@ -1,8 +1,8 @@
 // lib/presentation/mode_selection/mode_selection_screen.dart
 import 'package:flutter/material.dart';
-import '../../core/constants/colors.dart';
-import '../../widgets/zikr_card.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../core/responsive/responsive_layout.dart';
+import '../../widgets/zikr_card.dart';
 import '../normal/normal_screen.dart';
 import '../custom/custom_setup_screen.dart';
 import '../presets/presets_screen.dart';
@@ -13,58 +13,79 @@ class ModeSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF0F0F0F),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.primaryBlack, AppColors.secondaryDark],
+          gradient: RadialGradient(
+            center: Alignment.topCenter,
+            radius: 1.5,
+            colors: [Color(0xFF1A1A1A), Color(0xFF0A0A0A)],
           ),
         ),
         child: SafeArea(
           child: ResponsiveLayout(
-            mobile: _buildMobileLayout(context),
-            tablet: _buildWideLayout(context),
-            desktop: _buildWideLayout(context),
+            mobile: const _ModeContent(),
+            tablet: const Center(child: SizedBox(width: 450, child: _ModeContent())),
+            desktop: const Center(child: SizedBox(width: 500, child: _ModeContent())),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildMobileLayout(BuildContext context) {
+class _ModeContent extends StatelessWidget {
+  const _ModeContent();
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
-          const Spacer(flex: 1),
+          const Spacer(flex: 2),
+          
+          // Header section instead of a big gap
+          Text(
+            'SELECT MODE',
+            style: GoogleFonts.philosopher(
+              color: Colors.white54,
+              fontSize: 14,
+              letterSpacing: 4,
+            ),
+          ),
+          const SizedBox(height: 40),
+
           ZikrCard(
             title: 'NORMAL',
-            icon: Icons.play_arrow,
+            icon: Icons.play_arrow_rounded,
+            isAction: true,
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const NormalScreen())),
           ),
+          const SizedBox(height: 16),
           ZikrCard(
             title: 'CUSTOM',
-            icon: Icons.settings,
+            icon: Icons.tune_rounded,
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomSetupScreen())),
           ),
+          const SizedBox(height: 16),
           ZikrCard(
             title: 'YOUR PRESETS',
-            icon: Icons.list,
+            icon: Icons.bookmarks_outlined,
             onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PresetsScreen())),
           ),
-          const Spacer(flex: 2),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildWideLayout(BuildContext context) {
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: 500),
-        padding: const EdgeInsets.all(48),
-        child: _buildMobileLayout(context),
+          const Spacer(flex: 3),
+          
+          Opacity(
+            opacity: 0.1,
+            child: Text(
+              'AL Zikr',
+              style: GoogleFonts.lobster(fontSize: 48, color: Colors.white),
+            ),
+          ),
+          const SizedBox(height: 30),
+        ],
       ),
     );
   }

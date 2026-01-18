@@ -1,4 +1,4 @@
-import 'package:al_zikr/models/presnt_model.dart';
+import 'package:al_zikr/models/preset_model.dart';
 import 'package:flutter/foundation.dart';
 import '../core/services/storage_service.dart';
 

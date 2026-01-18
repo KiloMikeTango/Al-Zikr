@@ -30,9 +30,8 @@ class _CustomSetupBody extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => showDialog(
           context: context,
-          builder: (_) => AddZikrDialog(
-            onAdd: (item) => controller.addZikr(item),
-          ),
+          builder: (_) =>
+              AddZikrDialog(onAdd: (item) => controller.addZikr(item)),
         ),
         child: const Icon(Icons.add),
       ),
@@ -47,8 +46,8 @@ class _CustomSetupBody extends StatelessWidget {
                     itemBuilder: (_, i) {
                       final z = controller.zikrs[i];
                       return ZikrCard(
+                        icon: Icons.play_arrow,
                         title: '${z.text} (${z.target}x)',
-                        icon: Icons.drag_handle,
                         onTap: () {},
                       );
                     },

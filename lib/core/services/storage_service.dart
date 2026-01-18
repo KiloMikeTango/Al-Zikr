@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:al_zikr/models/presnt_model.dart';
+import 'package:al_zikr/models/preset_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StorageService {
