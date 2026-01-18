@@ -1,6 +1,7 @@
-import 'package:al_zikr/models/preset_model.dart';
+// controllers/preset_controller.dart
 import 'package:flutter/foundation.dart';
 import '../core/services/storage_service.dart';
+import '../models/preset_model.dart';
 
 class PresetController extends ChangeNotifier {
   List<PresetModel> presets = [];
@@ -12,6 +13,12 @@ class PresetController extends ChangeNotifier {
 
   Future<void> addPreset(PresetModel preset) async {
     presets.add(preset);
+    await StorageService.savePresets(presets);
+    notifyListeners();
+  }
+
+  Future<void> updatePreset(int index, PresetModel preset) async {
+    presets[index] = preset;
     await StorageService.savePresets(presets);
     notifyListeners();
   }

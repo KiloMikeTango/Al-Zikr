@@ -1,47 +1,35 @@
-// lib/widgets/counter_display.dart
+// lib/presentation/widgets/counter_display.dart
 import 'package:flutter/material.dart';
-import '../core/constants/colors.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CounterDisplay extends StatelessWidget {
   final int count;
-  final bool large;
+  final double scale;
 
-  const CounterDisplay({
-    super.key,
-    required this.count,
-    this.large = false,
-  });
+  const CounterDisplay({super.key, required this.count, this.scale = 1.0});
 
   @override
   Widget build(BuildContext context) {
-    final isDesktop = MediaQuery.of(context).size.width > 800;
-    final fontSize = isDesktop ? (large ? 80.0 : 40.0) : (large ? 60.0 : 32.0);
-
     return Container(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.symmetric(horizontal: 40 * scale, vertical: 20 * scale),
       decoration: BoxDecoration(
-        color: AppColors.secondaryDark.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(24),
+        color: const Color(0xFF1E1E1E),
+        borderRadius: BorderRadius.circular(20 * scale),
+        border: Border.all(color: Colors.white10),
         boxShadow: [
           BoxShadow(
-            color: AppColors.counterGlow.withOpacity(0.4),
-            blurRadius: 40,
-            spreadRadius: 0,
+            color: Colors.black.withOpacity(0.3),
+            blurRadius: 20 * scale,
+            offset: const Offset(0, 10),
           ),
         ],
       ),
       child: Text(
-        count.toString(),
-        style: TextStyle(
-          fontSize: fontSize,
+        '$count',
+        style: GoogleFonts.philosopher(
+          fontSize: 120 * scale,
           fontWeight: FontWeight.bold,
-          color: AppColors.textWhite,
-          shadows: [
-            Shadow(
-              color: AppColors.counterGlow,
-              blurRadius: 20,
-            ),
-          ],
+          color: Colors.white,
         ),
       ),
     );

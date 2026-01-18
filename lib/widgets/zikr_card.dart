@@ -18,88 +18,119 @@ class ZikrCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        height: 100, // Reduced height for a more modern, compact look
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.05)),
-        ),
-        child: Row(
-          children: [
-            // Left Content
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.philosopher(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white.withOpacity(0.9),
-                        letterSpacing: 1.2,
+    // Using LayoutBuilder allows the card to know how much space it actually has
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double cardWidth = constraints.maxWidth;
+        // Dynamic scaling factor based on width
+        final double scale = cardWidth > 600 ? 1.2 : 1.0;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: InkWell(
+            onTap: onTap,
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              constraints: const BoxConstraints(minHeight: 100, maxHeight: 120),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1A1A),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: Colors.white.withOpacity(0.05)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  // 1. Title and Branding Section
+                  Expanded(
+                    flex: 4,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: cardWidth * 0.06),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.philosopher(
+                              fontSize: 18 * scale,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white.withOpacity(0.9),
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'AL Zikr',
+                            style: GoogleFonts.lobster(
+                              fontSize: 14 * scale,
+                              color: Colors.white24,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'AL Zikr',
-                      style: GoogleFonts.lobster(
-                        fontSize: 16,
-                        color: Colors.white24, // Very subtle secondary branding
-                      ),
+                  ),
+
+                  // 2. Subtle Vertical Divider
+                  Container(
+                    width: 1,
+                    height: 40,
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    color: Colors.white10,
+                  ),
+
+                  // 3. Action / Icon Section
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: isAction
+                          ? _buildPlayButton(scale)
+                          : _buildIcon(scale),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-
-            // Modern Divider (Thin and short)
-            Container(width: 1, height: 40, color: Colors.white10),
-
-            // Action Area
-            Container(
-              width: 80,
-              alignment: Alignment.center,
-              child: isAction ? _buildPlayButton() : _buildIcon(),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildPlayButton() {
+  Widget _buildPlayButton(double scale) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: EdgeInsets.all(8 * scale),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: [Colors.greenAccent.shade700, Colors.greenAccent.shade400],
+        gradient: const LinearGradient(
+          colors: [Color(0xFF00C853), Color(0xFF64DD17)],
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.greenAccent.withOpacity(0.3),
-            blurRadius: 10,
+            color: const Color(0xFF00C853).withOpacity(0.3),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
       ),
-      child: const Icon(
+      child: Icon(
         Icons.play_arrow_rounded,
         color: Colors.black,
-        size: 28,
+        size: 28 * scale,
       ),
     );
   }
 
-  Widget _buildIcon() {
-    return Icon(icon, color: Colors.white38, size: 24);
+  Widget _buildIcon(double scale) {
+    return Icon(icon, color: Colors.white38, size: 24 * scale);
   }
 }
