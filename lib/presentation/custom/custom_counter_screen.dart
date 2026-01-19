@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:vibration/vibration.dart';
 import '../../controllers/counter_controller.dart';
 
 class CustomCounterScreen extends StatelessWidget {
@@ -114,8 +115,12 @@ class _CustomCounterBody extends StatelessWidget {
                     child: _TapCircle(
                       pxW: pxW,
                       pxH: pxH,
-                      onTap: () {
-                        HapticFeedback.lightImpact();
+                      onTap: () async {
+                          if (await Vibration.hasVibrator()) {
+                                Vibration.vibrate(
+                                  duration: 40,
+                                ); // 40–60ms feels like a tap
+                              }
                         context.read<CounterController>().tap();
                       },
                     ),

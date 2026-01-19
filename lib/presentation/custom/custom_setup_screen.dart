@@ -7,6 +7,8 @@ import '../../controllers/custom_controller.dart';
 import '../../controllers/counter_controller.dart';
 import '../../widgets/add_zikr_dialog.dart';
 import 'custom_counter_screen.dart';
+import 'package:vibration/vibration.dart';
+
 
 class CustomSetupScreen extends StatelessWidget {
   const CustomSetupScreen({super.key});
@@ -137,8 +139,12 @@ class _CustomSetupBody extends StatelessWidget {
                     child: GestureDetector(
                       onTap: controller.zikrs.isEmpty
                           ? null
-                          : () {
-                              HapticFeedback.heavyImpact();
+                          : () async {
+                              if (await Vibration.hasVibrator()) {
+                                Vibration.vibrate(
+                                  duration: 40,
+                                ); // 40–60ms feels like a tap
+                              }
                               final counter = CounterController()
                                 ..setZikrs(controller.zikrs);
                               Navigator.push(
