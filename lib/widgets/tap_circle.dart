@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -8,7 +7,7 @@ class TapCircle extends StatelessWidget {
   final double Function(double) pxW;
   final double Function(double) pxH;
 
-  const TapCircle({required this.onTap, required this.pxW, required this.pxH});
+  const TapCircle({super.key, required this.onTap, required this.pxW, required this.pxH});
 
   @override
   Widget build(BuildContext context) {

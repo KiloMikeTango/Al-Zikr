@@ -1,9 +1,9 @@
 // lib/presentation/custom/custom_counter_screen.dart
 import 'dart:math' as math;
+import 'package:al_zikr/widgets/counter_box.dart';
 import 'package:al_zikr/widgets/reset_button.dart';
 import 'package:al_zikr/widgets/tap_circle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
@@ -94,7 +94,7 @@ class _CustomCounterBody extends StatelessWidget {
                   // 2. COUNTER BOX (Exact same as Normal Screen)
                   Positioned(
                     top: pxH(550),
-                    child: _CounterBox(pxH: pxH, pxW: pxW),
+                    child: CounterBox(pxH: pxH, pxW: pxW),
                   ),
 
                   // 3. RESET BUTTON (Exact same as Normal Screen)
@@ -202,44 +202,8 @@ class _CustomCounterBody extends StatelessWidget {
   }
 }
 
-// --- Internal Components (Exact duplicates from Normal Screen for consistency) ---
 
-class _CounterBox extends StatelessWidget {
-  final double Function(double) pxH;
-  final double Function(double) pxW;
-  const _CounterBox({required this.pxH, required this.pxW});
 
-  @override
-  Widget build(BuildContext context) {
-    final count = context.watch<CounterController>().currentCount;
-    return Container(
-      width: pxW(550),
-      height: pxH(350),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
-        borderRadius: BorderRadius.circular(pxH(30)),
-        border: Border.all(color: Colors.white10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          '$count',
-          style: GoogleFonts.philosopher(
-            fontSize: pxH(200),
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 
 

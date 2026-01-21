@@ -1,10 +1,8 @@
 // lib/presentation/presets/presets_screen.dart
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:vibration/vibration.dart';
 import '../../controllers/preset_controller.dart';
 import '../../controllers/counter_controller.dart';
 import '../custom/custom_counter_screen.dart';
@@ -141,11 +139,6 @@ class _PresetsBody extends StatelessWidget {
                                   existing: p,
                                 ),
                                 onTap: () async {
-                                  if (await Vibration.hasVibrator()) {
-                                    Vibration.vibrate(
-                                      duration: 40,
-                                    ); // 40–60ms feels like a tap
-                                  }
                                   final counter = CounterController()
                                     ..setZikrs(p.zikrs);
                                   Navigator.push(
