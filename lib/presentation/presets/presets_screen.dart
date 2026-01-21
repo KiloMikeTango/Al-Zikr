@@ -25,7 +25,12 @@ class _EditableZikr {
 class _PresetEditResult {
   final String name;
   final List<ZikrItem> zikrs;
-  _PresetEditResult({required this.name, required this.zikrs});
+  final bool delete;
+  _PresetEditResult({
+    required this.name,
+    required this.zikrs,
+    this.delete = false,
+  });
 }
 
 // --- Main Screen ---
@@ -183,12 +188,22 @@ class _PresetsBody extends StatelessWidget {
       ),
     );
 
-    if (result != null && result.name.isNotEmpty) {
-      final pc = context.read<PresetController>();
-      final preset = PresetModel(name: result.name, zikrs: result.zikrs);
-      index == null
-          ? await pc.addPreset(preset)
-          : await pc.updatePreset(index, preset);
+    if (result == null) return;
+
+    final pc = context.read<PresetController>();
+
+    if (result.delete && index != null) {
+      await pc.deletePreset(index);
+      return;
+    }
+
+    if (result.name.isEmpty || result.zikrs.isEmpty) return;
+
+    final preset = PresetModel(name: result.name, zikrs: result.zikrs);
+    if (index == null) {
+      await pc.addPreset(preset);
+    } else {
+      await pc.updatePreset(index, preset);
     }
   }
 }
@@ -308,7 +323,7 @@ class _PresetEditPageState extends State<_PresetEditPage> {
 
               return Stack(
                 children: [
-                  // TOP BAR (Monochrome Save/Cancel)
+                  // TOP BAR
                   Positioned(
                     left: pxW(100),
                     top: pxH(150),
@@ -339,12 +354,17 @@ class _PresetEditPageState extends State<_PresetEditPage> {
                         GestureDetector(
                           onTap: () {
                             final zikrs = _items
-                                .where((e) => e.textController.text.isNotEmpty)
+                                .where(
+                                  (e) =>
+                                      e.textController.text.trim().isNotEmpty,
+                                )
                                 .map(
                                   (e) => ZikrItem(
-                                    text: e.textController.text,
+                                    text: e.textController.text.trim(),
                                     target:
-                                        int.tryParse(e.countController.text) ??
+                                        int.tryParse(
+                                          e.countController.text.trim(),
+                                        ) ??
                                         33,
                                   ),
                                 )
@@ -352,8 +372,9 @@ class _PresetEditPageState extends State<_PresetEditPage> {
                             Navigator.pop(
                               context,
                               _PresetEditResult(
-                                name: _nameController.text,
+                                name: _nameController.text.trim(),
                                 zikrs: zikrs,
+                                delete: false,
                               ),
                             );
                           },
@@ -478,6 +499,33 @@ class _PresetEditPageState extends State<_PresetEditPage> {
                               ),
                             ),
                           ),
+                          if (widget.isEditing) ...[
+                            SizedBox(height: pxH(20)),
+                            TextButton.icon(
+                              onPressed: () {
+                                Navigator.pop(
+                                  context,
+                                  _PresetEditResult(
+                                    name: _nameController.text.trim(),
+                                    zikrs: const [],
+                                    delete: true,
+                                  ),
+                                );
+                              },
+                              icon: Icon(
+                                Icons.delete_forever_rounded,
+                                color: Colors.redAccent.withOpacity(0.9),
+                                size: pxH(60),
+                              ),
+                              label: Text(
+                                'DELETE PRESET',
+                                style: GoogleFonts.philosopher(
+                                  color: Colors.redAccent.withOpacity(0.9),
+                                  fontSize: pxH(45),
+                                ),
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
