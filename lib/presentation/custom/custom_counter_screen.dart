@@ -173,14 +173,40 @@ class _CustomCounterBody extends StatelessWidget {
                             ),
                             // Right Side: Zikr Text
                             Expanded(
-                              child: Center(
-                                child: Text(
-                                  zikr.text,
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.notoSansArabic(
-                                    fontSize: pxH(80),
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: pxW(20),
+                                ),
+                                child: ShaderMask(
+                                  shaderCallback: (Rect bounds) {
+                                    return const LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.black,
+                                        Colors.black,
+                                        Colors.transparent,
+                                      ],
+                                      stops: [0.0, 0.15, 0.85, 1.0],
+                                    ).createShader(bounds);
+                                  },
+                                  blendMode: BlendMode.dstIn,
+                                  child: SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: pxH(40),
+                                    ),
+                                    child: Text(
+                                      zikr.text,
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.notoSansArabic(
+                                        fontSize: pxH(75),
+                                        color: Colors.white,
+                                        height: 1.4,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
