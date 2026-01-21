@@ -1,5 +1,6 @@
 // lib/presentation/presets/presets_screen.dart
 import 'dart:math' as math;
+import 'package:al_zikr/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -503,12 +504,24 @@ class _PresetEditPageState extends State<_PresetEditPage> {
                             SizedBox(height: pxH(20)),
                             TextButton.icon(
                               onPressed: () {
-                                Navigator.pop(
-                                  context,
-                                  _PresetEditResult(
-                                    name: _nameController.text.trim(),
-                                    zikrs: const [],
-                                    delete: true,
+                                showDialog(
+                                  context: context,
+                                  builder: (dialogCtx) => ConfirmDialog(
+                                    actionText: 'YES',
+                                    title:
+                                        "Are you sure you want to delete this preset?",
+                                    subtitle: "This action can't be undone.",
+                                    onConfirm: () {
+                                      // dialog already popped inside ConfirmDialog
+                                      Navigator.pop(
+                                        context,
+                                        _PresetEditResult(
+                                          name: _nameController.text.trim(),
+                                          zikrs: const [],
+                                          delete: true,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 );
                               },

@@ -1,6 +1,6 @@
 // lib/presentation/custom/custom_counter_screen.dart
 import 'dart:math' as math;
-import 'package:al_zikr/widgets/confirm_exit_dialog.dart';
+import 'package:al_zikr/widgets/confirm_dialog.dart';
 import 'package:al_zikr/widgets/counter_box.dart';
 import 'package:al_zikr/widgets/reset_button.dart';
 import 'package:al_zikr/widgets/tap_circle.dart';
@@ -74,7 +74,11 @@ class _CustomCounterBody extends StatelessWidget {
                           onTap: () {
                             showDialog(
                               context: context,
-                              builder: (context) => ConfirmExitDialog(
+                              builder: (context) => ConfirmDialog(
+                                actionText: 'EXIT',
+                                title: 'EXIT SESSION?',
+                                subtitle:
+                                    'Your progress in this session will not be saved.',
                                 onConfirm: () => Navigator.pop(context),
                               ),
                             );

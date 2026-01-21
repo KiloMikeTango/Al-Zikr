@@ -1,12 +1,21 @@
-// lib/widgets/confirm_exit_dialog.dart
+// lib/widgets/confirm_dialog.dart
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ConfirmExitDialog extends StatelessWidget {
+class ConfirmDialog extends StatelessWidget {
   final VoidCallback onConfirm;
+  final String actionText;
+  final String title;
+  final String subtitle;
 
-  const ConfirmExitDialog({super.key, required this.onConfirm});
+  const ConfirmDialog({
+    super.key,
+    required this.onConfirm,
+    required this.actionText,
+    required this.title,
+    required this.subtitle
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -40,17 +49,18 @@ class ConfirmExitDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'EXIT SESSION?',
+              // 'EXIT SESSION?'
+              title,
               style: GoogleFonts.philosopher(
                 color: Colors.white,
                 fontSize: pxH(70),
                 fontWeight: FontWeight.bold,
-                letterSpacing: 2,
               ),
             ),
             SizedBox(height: pxH(40)),
             Text(
-              'Your progress in this session will not be saved.',
+              // 'Your progress in this session will not be saved.',
+              subtitle,
               textAlign: TextAlign.center,
               style: GoogleFonts.philosopher(
                 color: Colors.white38,
@@ -68,7 +78,7 @@ class ConfirmExitDialog extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: pxH(40)),
                       alignment: Alignment.center,
                       child: Text(
-                        'KEEP GOING',
+                        'CANCEL',
                         style: GoogleFonts.philosopher(
                           color: Colors.white38,
                           fontSize: pxH(45),
@@ -94,7 +104,7 @@ class ConfirmExitDialog extends StatelessWidget {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        'EXIT',
+                        actionText,
                         style: GoogleFonts.philosopher(
                           color: Colors.black,
                           fontSize: pxH(45),
