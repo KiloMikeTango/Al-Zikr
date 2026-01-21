@@ -1,3 +1,3 @@
 # al_zikr
 
-A new Flutter project.
+Tasbih / Zikr Counter App
