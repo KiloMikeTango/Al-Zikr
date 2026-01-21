@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:al_zikr/widgets/confirm_exit_dialog.dart';
 import 'package:al_zikr/widgets/counter_box.dart';
 import 'package:al_zikr/widgets/reset_button.dart';
 import 'package:al_zikr/widgets/tap_circle.dart';
@@ -60,7 +61,15 @@ class _NormalBody extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            //exit to mode selection screen
+                            showDialog(
+                              context: context,
+                              builder: (context) => ConfirmExitDialog(
+                                onConfirm: () => Navigator.pop(context),
+                              ),
+                            );
+                          },
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
                             color: Colors.white,
@@ -95,7 +104,6 @@ class _NormalBody extends StatelessWidget {
                       pxH: pxH,
                       pxW: pxW,
                       onReset: () {
-                        HapticFeedback.mediumImpact();
                         context.read<CounterController>().reset();
                       },
                     ),
@@ -141,10 +149,3 @@ class _NormalBody extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-

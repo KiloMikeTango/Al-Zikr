@@ -6,7 +6,7 @@ class ResetButton extends StatelessWidget {
   final double Function(double) pxW;
   final VoidCallback onReset;
 
-  const ResetButton({
+  const ResetButton({super.key, 
     required this.pxH,
     required this.pxW,
     required this.onReset,

@@ -1,5 +1,6 @@
 // lib/presentation/custom/custom_counter_screen.dart
 import 'dart:math' as math;
+import 'package:al_zikr/widgets/confirm_exit_dialog.dart';
 import 'package:al_zikr/widgets/counter_box.dart';
 import 'package:al_zikr/widgets/reset_button.dart';
 import 'package:al_zikr/widgets/tap_circle.dart';
@@ -70,7 +71,14 @@ class _CustomCounterBody extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => ConfirmExitDialog(
+                                onConfirm: () => Navigator.pop(context),
+                              ),
+                            );
+                          },
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
                             color: Colors.white,
@@ -117,11 +125,11 @@ class _CustomCounterBody extends StatelessWidget {
                       pxW: pxW,
                       pxH: pxH,
                       onTap: () async {
-                          if (await Vibration.hasVibrator()) {
-                                Vibration.vibrate(
-                                  duration: 40,
-                                ); // 40–60ms feels like a tap
-                              }
+                        if (await Vibration.hasVibrator()) {
+                          Vibration.vibrate(
+                            duration: 40,
+                          ); // 40–60ms feels like a tap
+                        }
                         context.read<CounterController>().tap();
                       },
                     ),
@@ -201,12 +209,3 @@ class _CustomCounterBody extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
