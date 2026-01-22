@@ -149,7 +149,7 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
 
                   // 2. COUNTER BOX
                   Positioned(
-                    top: pxH(550),
+                    top: pxH(480),
                     child: CounterBox(pxH: pxH, pxW: pxW),
                   ),
 
@@ -157,7 +157,7 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                   // Restart All (Left)
                   Positioned(
                     left: pxW(120),
-                    top: pxH(1050),
+                    top: pxH(980),
                     child: Column(
                       children: [
                         GestureDetector(
@@ -187,7 +187,7 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                   // Reset Current (Right)
                   Positioned(
                     right: pxW(120),
-                    top: pxH(1050),
+                    top: pxH(980),
                     child: Column(
                       children: [
                         ResetButton(
@@ -202,7 +202,7 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
 
                   // 4. MAIN TAP CIRCLE
                   Positioned(
-                    top: pxH(1250),
+                    top: pxH(1180),
                     child: TapCircle(
                       pxW: pxW,
                       pxH: pxH,

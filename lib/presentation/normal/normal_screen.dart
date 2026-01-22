@@ -4,7 +4,6 @@ import 'package:al_zikr/widgets/counter_box.dart';
 import 'package:al_zikr/widgets/reset_button.dart';
 import 'package:al_zikr/widgets/tap_circle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:vibration/vibration.dart';
@@ -96,14 +95,14 @@ class _NormalBody extends StatelessWidget {
 
                   // 2. COUNTER BOX (Top-Center)
                   Positioned(
-                    top: pxH(550),
+                    top: pxH(480),
                     child: CounterBox(pxH: pxH, pxW: pxW),
                   ),
 
                   // 3. RESET BUTTON (Right-Side)
                   Positioned(
                     right: pxW(120),
-                    top: pxH(1050),
+                    top: pxH(980),
                     child: ResetButton(
                       pxH: pxH,
                       pxW: pxW,
@@ -115,7 +114,7 @@ class _NormalBody extends StatelessWidget {
 
                   // 4. MAIN TAP CIRCLE (True Center)
                   Positioned(
-                    top: pxH(1250),
+                    top: pxH(1180),
                     child: TapCircle(
                       pxW: pxW,
                       pxH: pxH,
