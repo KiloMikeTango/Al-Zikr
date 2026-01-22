@@ -9,9 +9,8 @@ class CounterController extends ChangeNotifier {
 
   bool get hasZikrs => zikrs.isNotEmpty;
 
-  ZikrItem? get currentZikr => hasZikrs && currentZikrIndex < zikrs.length
-      ? zikrs[currentZikrIndex]
-      : null;
+  ZikrItem? get currentZikr =>
+      hasZikrs && currentZikrIndex < zikrs.length ? zikrs[currentZikrIndex] : null;
 
   bool get isPresetMode => zikrs.isNotEmpty;
 
@@ -36,7 +35,7 @@ class CounterController extends ChangeNotifier {
   }
 
   Future<void> tap() async {
-    // single mode behavior: just increment
+    // single mode
     if (!isPresetMode && currentZikr == null) {
       currentCount++;
       await VibrationService.singleVibrate();
@@ -44,32 +43,28 @@ class CounterController extends ChangeNotifier {
       return;
     }
 
-    // preset mode finished: ignore taps
+    // preset finished
     if (isCompleted) return;
 
-    // multi‑zikr mode
-    if (currentZikr == null) return;
+    final zikr = currentZikr;
+    if (zikr == null) return;
 
-    if (currentCount < currentZikr!.target) {
-      currentCount++;
-      await VibrationService.singleVibrate();
+    currentCount++;
+    await VibrationService.singleVibrate();
 
-      if (currentCount >= currentZikr!.target) {
-        // hit target
-        await VibrationService.doubleVibrate();
-        await _goNextZikr();
-      }
-      notifyListeners();
+    if (currentCount >= zikr.target) {
+      // hit target for this zikr
+      await _goNextZikr();
     }
+
+    notifyListeners();
   }
 
-  /// Reset only the current zikr count
   void reset() {
     currentCount = 0;
     notifyListeners();
   }
 
-  /// Restart from first zikr and reset its count
   void restartAll() {
     currentZikrIndex = 0;
     currentCount = 0;
@@ -77,12 +72,14 @@ class CounterController extends ChangeNotifier {
   }
 
   Future<void> _goNextZikr() async {
+    // if there is a next zikr: double buzz and advance
     if (currentZikrIndex + 1 < zikrs.length) {
+      await VibrationService.doubleVibrate();
       currentZikrIndex++;
       currentCount = 0;
-      await VibrationService.doubleVibrate();
     } else {
-      // finished all zikr, clamp to last target
+      // last zikr finished: triple buzz and clamp
+      await VibrationService.tripleVibrate();
       if (currentZikr != null) {
         currentCount = currentZikr!.target;
       }

@@ -13,4 +13,12 @@ class VibrationService {
     await Future.delayed(const Duration(milliseconds: 80));
     await singleVibrate();
   }
+
+  static Future<void> tripleVibrate() async {
+    await singleVibrate();
+    await Future.delayed(const Duration(milliseconds: 80));
+    await singleVibrate();
+    await Future.delayed(const Duration(milliseconds: 80));
+    await singleVibrate();
+  }
 }
