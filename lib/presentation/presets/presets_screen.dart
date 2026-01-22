@@ -489,14 +489,14 @@ class _PresetEditPageState extends State<_PresetEditPage> {
                             ),
                             icon: Icon(
                               Icons.add_circle_outline,
-                              color: Colors.white38,
+                              color: Colors.white,
                               size: pxH(60),
                             ),
                             label: Text(
                               'ADD NEW LINE',
                               style: GoogleFonts.philosopher(
-                                color: Colors.white38,
-                                fontSize: pxH(45),
+                                color: Colors.white,
+                                fontSize: pxH(50),
                               ),
                             ),
                           ),

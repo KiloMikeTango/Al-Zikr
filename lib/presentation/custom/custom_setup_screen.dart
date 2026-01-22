@@ -9,7 +9,6 @@ import '../../widgets/add_zikr_dialog.dart';
 import 'custom_counter_screen.dart';
 import 'package:vibration/vibration.dart';
 
-
 class CustomSetupScreen extends StatelessWidget {
   const CustomSetupScreen({super.key});
 
@@ -75,18 +74,17 @@ class _CustomSetupBody extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: ()=> showDialog(
-                              context: context,
-                              builder: (context) => ConfirmDialog(
-                                actionText: 'EXIT',
-                                title: 'EXIT SESSION?',
-                                subtitle:
-                                    'Your Zikr in this session will not be saved.',
-                                onConfirm: () => Navigator.pop(context),
-                              ),
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => ConfirmDialog(
+                              actionText: 'EXIT',
+                              title: 'EXIT SESSION?',
+                              subtitle:
+                                  'Your Zikr Setups in this session will not be saved.',
+                              onConfirm: () => Navigator.pop(context),
                             ),
+                          ),
 
-                          
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
                             color: Colors.white,
@@ -134,9 +132,7 @@ class _CustomSetupBody extends StatelessWidget {
                                 target: z.target,
                                 pxH: pxH,
                                 pxW: pxW,
-                                onRemove: () => controller.removeAt(
-                                  i,
-                                ), // Assuming you have this in controller
+                                onRemove: () => controller.removeAt(i),
                               );
                             },
                           ),
