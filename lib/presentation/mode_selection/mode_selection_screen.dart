@@ -95,7 +95,7 @@ class _ModeContent extends StatelessWidget {
 
               _SelectionCard(
                 title: 'CUSTOM',
-                subtitle: 'Setup a quick session',
+                subtitle: 'Set up a one-time session',
                 pxH: pxH,
                 onTap: () => Navigator.push(
                   context,

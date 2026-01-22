@@ -29,17 +29,27 @@ class CustomCounterScreen extends StatelessWidget {
   }
 }
 
-class _CustomCounterBody extends StatelessWidget {
+class _CustomCounterBody extends StatefulWidget {
   final String title;
-  _CustomCounterBody({required this.title});
+  const _CustomCounterBody({required this.title});
 
+  @override
+  State<_CustomCounterBody> createState() => _CustomCounterBodyState();
+}
+
+class _CustomCounterBodyState extends State<_CustomCounterBody> {
   final ScrollController _scrollController = ScrollController();
+  String? _lastZikrText;
 
-  // Logic to scroll exactly by one line height
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _scrollLine(double scale, bool forward) {
     if (!_scrollController.hasClients) return;
 
-    // Calculate the exact line height: fontSize(75) * height(1.6) * scale
     final double lineHeight = 75 * 1.6 * scale;
     final double targetOffset = forward
         ? _scrollController.offset + lineHeight
@@ -47,8 +57,8 @@ class _CustomCounterBody extends StatelessWidget {
 
     _scrollController.animateTo(
       targetOffset.clamp(0.0, _scrollController.position.maxScrollExtent),
-      duration: const Duration(milliseconds: 400),
-      curve: Curves.easeOutCubic, // Smoother curve for line-by-line feel
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.decelerate,
     );
   }
 
@@ -56,6 +66,20 @@ class _CustomCounterBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.watch<CounterController>();
     final zikr = c.currentZikr;
+
+    // Reset Scroll when Zikr changes
+    if (zikr != null && zikr.text != _lastZikrText) {
+      _lastZikrText = zikr.text;
+      if (_scrollController.hasClients) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _scrollController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+        });
+      }
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
@@ -80,7 +104,6 @@ class _CustomCounterBody extends StatelessWidget {
               double pxW(double v) => v * scale;
               double pxH(double v) => v * scale;
 
-              // Threshold check: roughly if text is longer than a standard line
               final bool isLongText = (zikr?.text.length ?? 0) > 40;
 
               return Stack(
@@ -113,7 +136,7 @@ class _CustomCounterBody extends StatelessWidget {
                         ),
                         SizedBox(width: pxW(60)),
                         Text(
-                          title.toUpperCase(),
+                          widget.title.toUpperCase(),
                           style: GoogleFonts.philosopher(
                             fontSize: pxH(90),
                             fontWeight: FontWeight.w700,
@@ -157,12 +180,12 @@ class _CustomCounterBody extends StatelessWidget {
                     ),
                   ),
 
-                  // 5. ZIKR INFO BOX (Line-by-Line Scroll)
+                  // 5. ZIKR INFO BOX (Consistent Scrolling + Transition Animation)
                   if (zikr != null)
                     Positioned(
                       bottom: pxH(400),
                       child: Container(
-                        width: pxW(1260),
+                        width: pxW(1300),
                         height: pxH(300),
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E1E1E),
@@ -173,7 +196,7 @@ class _CustomCounterBody extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            // Left: Target
+                            // Left side Target Count
                             Container(
                               width: pxW(280),
                               alignment: Alignment.center,
@@ -194,7 +217,7 @@ class _CustomCounterBody extends StatelessWidget {
                               ),
                             ),
 
-                            // Right: Stepper Text
+                            // Right side Stepper Text with Cross-Fade
                             Expanded(
                               child: Row(
                                 children: [
@@ -221,14 +244,33 @@ class _CustomCounterBody extends StatelessWidget {
                                         child: Padding(
                                           padding: EdgeInsets.symmetric(
                                             vertical: pxH(85),
-                                          ), // Centers the first line
-                                          child: Text(
-                                            zikr.text,
-                                            textAlign: TextAlign.center,
-                                            style: GoogleFonts.notoSansArabic(
-                                              fontSize: pxH(75),
-                                              color: Colors.white,
-                                              height: 1.6,
+                                          ),
+                                          // AnimatedSwitcher handles the Cross-Fade transition
+                                          child: AnimatedSwitcher(
+                                            duration: const Duration(
+                                              milliseconds: 400,
+                                            ),
+                                            transitionBuilder:
+                                                (
+                                                  Widget child,
+                                                  Animation<double> animation,
+                                                ) {
+                                                  return FadeTransition(
+                                                    opacity: animation,
+                                                    child: child,
+                                                  );
+                                                },
+                                            child: Text(
+                                              zikr.text,
+                                              key: ValueKey<String>(
+                                                zikr.text,
+                                              ), // Key is vital for AnimatedSwitcher
+                                              textAlign: TextAlign.center,
+                                              style: GoogleFonts.notoSansArabic(
+                                                fontSize: pxH(75),
+                                                color: Colors.white,
+                                                height: 1.6,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -236,7 +278,7 @@ class _CustomCounterBody extends StatelessWidget {
                                     ),
                                   ),
 
-                                  // Functional Arrow Steppers
+                                  // Arrows
                                   Padding(
                                     padding: EdgeInsets.only(right: pxW(25)),
                                     child: Column(
