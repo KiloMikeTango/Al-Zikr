@@ -9,8 +9,17 @@ class CounterController extends ChangeNotifier {
 
   bool get hasZikrs => zikrs.isNotEmpty;
 
-  ZikrItem? get currentZikr =>
-      hasZikrs && currentZikrIndex < zikrs.length ? zikrs[currentZikrIndex] : null;
+  ZikrItem? get currentZikr => hasZikrs && currentZikrIndex < zikrs.length
+      ? zikrs[currentZikrIndex]
+      : null;
+
+  bool get isPresetMode => zikrs.isNotEmpty;
+
+  bool get isCompleted =>
+      isPresetMode &&
+      currentZikrIndex == zikrs.length - 1 &&
+      currentZikr != null &&
+      currentCount >= currentZikr!.target;
 
   void setSingleMode() {
     zikrs = [];
@@ -27,13 +36,16 @@ class CounterController extends ChangeNotifier {
   }
 
   Future<void> tap() async {
-    if (!hasZikrs && currentZikr == null) {
-      // single mode behavior: just increment
+    // single mode behavior: just increment
+    if (!isPresetMode && currentZikr == null) {
       currentCount++;
       await VibrationService.singleVibrate();
       notifyListeners();
       return;
     }
+
+    // preset mode finished: ignore taps
+    if (isCompleted) return;
 
     // multi‑zikr mode
     if (currentZikr == null) return;

@@ -39,7 +39,7 @@ class SessionEndDialog extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'PRESET COMPLETED',
+              'ZIKR COMPLETED',
               style: GoogleFonts.philosopher(
                 color: Colors.white,
                 fontSize: pxH(70),
@@ -48,11 +48,11 @@ class SessionEndDialog extends StatelessWidget {
             ),
             SizedBox(height: pxH(40)),
             Text(
-              'You have finished all zikr in this preset.',
+              'You have finished all zikr in this session.',
               textAlign: TextAlign.center,
               style: GoogleFonts.philosopher(
                 color: Colors.white38,
-                fontSize: pxH(45),
+                fontSize: pxH(50),
               ),
             ),
             SizedBox(height: pxH(100)),

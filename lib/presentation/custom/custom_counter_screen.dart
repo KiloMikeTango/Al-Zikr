@@ -4,6 +4,7 @@ import 'package:al_zikr/widgets/confirm_dialog.dart';
 import 'package:al_zikr/widgets/counter_box.dart';
 import 'package:al_zikr/widgets/reset_button.dart';
 import 'package:al_zikr/widgets/tap_circle.dart';
+import 'package:al_zikr/widgets/session_end_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -40,6 +41,7 @@ class _CustomCounterBody extends StatefulWidget {
 class _CustomCounterBodyState extends State<_CustomCounterBody> {
   final ScrollController _scrollController = ScrollController();
   String? _lastZikrText;
+  bool _shownCompletionDialog = false;
 
   @override
   void dispose() {
@@ -67,6 +69,30 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
     final c = context.watch<CounterController>();
     final zikr = c.currentZikr;
 
+    // When preset just completed, show dialog once
+    if (c.isCompleted && !_shownCompletionDialog && c.isPresetMode) {
+      _shownCompletionDialog = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        final choice = await showDialog<SessionChoice>(
+          context: context,
+          builder: (_) => const SessionEndDialog(),
+        );
+
+        if (!mounted) return;
+
+        if (choice == SessionChoice.startOver) {
+          _shownCompletionDialog = false;
+          context.read<CounterController>().restartAll();
+        } else if (choice == SessionChoice.exit) {
+          Navigator.pop(context);
+        }
+      });
+    } else if (!c.isCompleted && _shownCompletionDialog) {
+      // reset flag if user restarted / changed preset
+      _shownCompletionDialog = false;
+    }
+
+    // Reset Scroll when Zikr changes
     if (zikr != null && zikr.text != _lastZikrText) {
       _lastZikrText = zikr.text;
       if (_scrollController.hasClients) {
@@ -153,8 +179,8 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                     child: CounterBox(pxH: pxH, pxW: pxW),
                   ),
 
-                  // 3. ACTION BUTTONS (Symmetrical Layout)
-                  // Restart All (Left)
+                  // 3. ACTION BUTTONS (Restart / Reset current)
+                  // Restart All (Left) – pure restart
                   Positioned(
                     left: pxW(120),
                     top: pxH(980),
@@ -220,7 +246,7 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                     Positioned(
                       bottom: pxH(400),
                       child: Container(
-                        width: pxW(1250),
+                        width: pxW(1300),
                         height: pxH(300),
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E1E1E),
@@ -231,6 +257,7 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                         ),
                         child: Row(
                           children: [
+                            // Left side target count
                             Container(
                               width: pxW(280),
                               alignment: Alignment.center,
@@ -250,6 +277,8 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                                 ),
                               ),
                             ),
+
+                            // Right side text + scroll arrows
                             Expanded(
                               child: Row(
                                 children: [
