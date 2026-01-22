@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'package:al_zikr/core/services/vibration_service.dart';
 import 'package:al_zikr/widgets/confirm_dialog.dart';
 import 'package:al_zikr/widgets/counter_box.dart';
 import 'package:al_zikr/widgets/reset_button.dart';
@@ -119,11 +120,7 @@ class _NormalBody extends StatelessWidget {
                       pxW: pxW,
                       pxH: pxH,
                       onTap: () async {
-                        if (await Vibration.hasVibrator()) {
-                          Vibration.vibrate(
-                            duration: 40,
-                          ); // 40–60ms feels like a tap
-                        }
+                         VibrationService.singleVibrate;
                         context.read<CounterController>().tap();
                       },
                     ),
