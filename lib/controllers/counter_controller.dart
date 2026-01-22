@@ -8,6 +8,7 @@ class CounterController extends ChangeNotifier {
   List<ZikrItem> zikrs = [];
 
   bool get hasZikrs => zikrs.isNotEmpty;
+
   ZikrItem? get currentZikr =>
       hasZikrs && currentZikrIndex < zikrs.length ? zikrs[currentZikrIndex] : null;
 
@@ -26,20 +27,40 @@ class CounterController extends ChangeNotifier {
   }
 
   Future<void> tap() async {
-    currentCount++;
-    await VibrationService.singleVibrate();
-
-    if (currentZikr != null && currentCount >= currentZikr!.target) {
-      // hit target
-      await VibrationService.doubleVibrate();
-      _goNextZikr();
+    if (!hasZikrs && currentZikr == null) {
+      // single mode behavior: just increment
+      currentCount++;
+      await VibrationService.singleVibrate();
+      notifyListeners();
+      return;
     }
+
+    // multi‑zikr mode
+    if (currentZikr == null) return;
+
+    if (currentCount < currentZikr!.target) {
+      currentCount++;
+      await VibrationService.singleVibrate();
+
+      if (currentCount >= currentZikr!.target) {
+        // hit target
+        await VibrationService.doubleVibrate();
+        await _goNextZikr();
+      }
+      notifyListeners();
+    }
+  }
+
+  /// Reset only the current zikr count
+  void reset() {
+    currentCount = 0;
     notifyListeners();
   }
 
-  void reset() {
-    currentCount = 0;
+  /// Restart from first zikr and reset its count
+  void restartAll() {
     currentZikrIndex = 0;
+    currentCount = 0;
     notifyListeners();
   }
 
@@ -47,11 +68,12 @@ class CounterController extends ChangeNotifier {
     if (currentZikrIndex + 1 < zikrs.length) {
       currentZikrIndex++;
       currentCount = 0;
-      // switch zikr feedback
       await VibrationService.doubleVibrate();
     } else {
-      // finished all zikr, keep last state but don’t overflow
-      currentCount = currentZikr!.target;
+      // finished all zikr, clamp to last target
+      if (currentZikr != null) {
+        currentCount = currentZikr!.target;
+      }
     }
   }
 }

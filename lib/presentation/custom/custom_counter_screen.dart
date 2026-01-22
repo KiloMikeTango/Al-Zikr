@@ -67,7 +67,6 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
     final c = context.watch<CounterController>();
     final zikr = c.currentZikr;
 
-    // Reset Scroll when Zikr changes
     if (zikr != null && zikr.text != _lastZikrText) {
       _lastZikrText = zikr.text;
       if (_scrollController.hasClients) {
@@ -119,12 +118,12 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                           onTap: () {
                             showDialog(
                               context: context,
-                              builder: (context) => ConfirmDialog(
+                              builder: (dialogCtx) => ConfirmDialog(
                                 actionText: 'EXIT',
                                 title: 'EXIT SESSION?',
                                 subtitle:
                                     'Your progress in this session will not be saved.',
-                                onConfirm: () => Navigator.pop(context),
+                                onConfirm: () => Navigator.pop(dialogCtx),
                               ),
                             );
                           },
@@ -154,14 +153,50 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                     child: CounterBox(pxH: pxH, pxW: pxW),
                   ),
 
-                  // 3. RESET BUTTON
+                  // 3. ACTION BUTTONS (Symmetrical Layout)
+                  // Restart All (Left)
+                  Positioned(
+                    left: pxW(120),
+                    top: pxH(1050),
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () =>
+                              context.read<CounterController>().restartAll(),
+                          child: Container(
+                            height: pxH(180),
+                            width: pxH(180),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.05),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.1),
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.restart_alt,
+                              color: Colors.white,
+                              size: pxH(80),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // Reset Current (Right)
                   Positioned(
                     right: pxW(120),
                     top: pxH(1050),
-                    child: ResetButton(
-                      pxH: pxH,
-                      pxW: pxW,
-                      onReset: () => context.read<CounterController>().reset(),
+                    child: Column(
+                      children: [
+                        ResetButton(
+                          pxH: pxH,
+                          pxW: pxW,
+                          onReset: () =>
+                              context.read<CounterController>().reset(),
+                        ),
+                      ],
                     ),
                   ),
 
@@ -180,12 +215,12 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                     ),
                   ),
 
-                  // 5. ZIKR INFO BOX (Consistent Scrolling + Transition Animation)
+                  // 5. ZIKR INFO BOX
                   if (zikr != null)
                     Positioned(
                       bottom: pxH(400),
                       child: Container(
-                        width: pxW(1300),
+                        width: pxW(1250),
                         height: pxH(300),
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E1E1E),
@@ -196,7 +231,6 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                         ),
                         child: Row(
                           children: [
-                            // Left side Target Count
                             Container(
                               width: pxW(280),
                               alignment: Alignment.center,
@@ -216,8 +250,6 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                                 ),
                               ),
                             ),
-
-                            // Right side Stepper Text with Cross-Fade
                             Expanded(
                               child: Row(
                                 children: [
@@ -245,7 +277,6 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                                           padding: EdgeInsets.symmetric(
                                             vertical: pxH(85),
                                           ),
-                                          // AnimatedSwitcher handles the Cross-Fade transition
                                           child: AnimatedSwitcher(
                                             duration: const Duration(
                                               milliseconds: 400,
@@ -262,9 +293,7 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                                                 },
                                             child: Text(
                                               zikr.text,
-                                              key: ValueKey<String>(
-                                                zikr.text,
-                                              ), // Key is vital for AnimatedSwitcher
+                                              key: ValueKey<String>(zikr.text),
                                               textAlign: TextAlign.center,
                                               style: GoogleFonts.notoSansArabic(
                                                 fontSize: pxH(75),
@@ -277,8 +306,6 @@ class _CustomCounterBodyState extends State<_CustomCounterBody> {
                                       ),
                                     ),
                                   ),
-
-                                  // Arrows
                                   Padding(
                                     padding: EdgeInsets.only(right: pxW(25)),
                                     child: Column(
