@@ -140,42 +140,51 @@ class _CustomCounterBody extends StatelessWidget {
                   ),
 
                   // 5. ZIKR INFO BOX (Custom for this screen)
+                  // 5. ZIKR INFO BOX (Classic Split Style with Modern Spacing)
                   if (zikr != null)
                     Positioned(
                       bottom: pxH(400),
                       child: Container(
                         width: pxW(1150),
-                        height: pxH(280),
+                        height: pxH(
+                          300,
+                        ), // Fixed height to keep the layout stable
                         decoration: BoxDecoration(
                           color: const Color(0xFF1E1E1E),
-                          borderRadius: BorderRadius.circular(pxH(40)),
-                          border: Border.all(color: Colors.white10),
+                          borderRadius: BorderRadius.circular(pxH(50)),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.05),
+                          ),
                         ),
                         child: Row(
                           children: [
-                            // Left Side: Target Count
+                            // Left Side: Target Count (The Classic '33x')
                             Container(
                               width: pxW(300),
                               alignment: Alignment.center,
-                              decoration: const BoxDecoration(
+                              // We keep the border but make it very subtle
+                              decoration: BoxDecoration(
                                 border: Border(
-                                  right: BorderSide(color: Colors.white10),
+                                  right: BorderSide(
+                                    color: Colors.white.withOpacity(0.05),
+                                  ),
                                 ),
                               ),
                               child: Text(
                                 '${zikr.target}x',
                                 style: GoogleFonts.philosopher(
-                                  fontSize: pxH(70),
-                                  color: Colors.white.withOpacity(0.7),
+                                  fontSize: pxH(75),
+                                  color: Colors.white.withOpacity(0.5),
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            // Right Side: Zikr Text
+
+                            // Right Side: Scrollable Text with Option 3 (Fade Mask)
                             Expanded(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: pxW(20),
+                                  horizontal: pxW(40),
                                 ),
                                 child: ShaderMask(
                                   shaderCallback: (Rect bounds) {
@@ -188,7 +197,12 @@ class _CustomCounterBody extends StatelessWidget {
                                         Colors.black,
                                         Colors.transparent,
                                       ],
-                                      stops: [0.0, 0.15, 0.85, 1.0],
+                                      stops: [
+                                        0.0,
+                                        0.15,
+                                        0.85,
+                                        1.0,
+                                      ], // Gentle fade edges
                                     ).createShader(bounds);
                                   },
                                   blendMode: BlendMode.dstIn,
@@ -201,9 +215,12 @@ class _CustomCounterBody extends StatelessWidget {
                                       zikr.text,
                                       textAlign: TextAlign.center,
                                       style: GoogleFonts.notoSansArabic(
-                                        fontSize: pxH(75),
+                                        // Dynamic size: slightly smaller if text is very long
+                                        fontSize: zikr.text.length > 60
+                                            ? pxH(65)
+                                            : pxH(80),
                                         color: Colors.white,
-                                        height: 1.4,
+                                        height: 1.5,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),

@@ -61,19 +61,19 @@ class _NormalBody extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            //exit to mode selection screen
-                            showDialog(
-                              context: context,
-                              builder: (context) => ConfirmDialog(
-                                actionText: 'EXIT',
-                                title: 'EXIT SESSION?',
-                                subtitle:
-                                    'Your progress in this session will not be saved.',
-                                onConfirm: () => Navigator.pop(context),
+                          onTap: () =>
+                              //exit to mode selection screen
+                              showDialog(
+                                context: context,
+                                builder: (context) => ConfirmDialog(
+                                  actionText: 'EXIT',
+                                  title: 'EXIT SESSION?',
+                                  subtitle:
+                                      'Your progress in this session will not be saved.',
+                                  onConfirm: () => Navigator.pop(context),
+                                ),
                               ),
-                            );
-                          },
+
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
                             color: Colors.white,

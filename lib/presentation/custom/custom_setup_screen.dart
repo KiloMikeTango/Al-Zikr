@@ -1,6 +1,6 @@
 import 'dart:math' as math;
+import 'package:al_zikr/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/custom_controller.dart';
@@ -75,7 +75,18 @@ class _CustomSetupBody extends StatelessWidget {
                     child: Row(
                       children: [
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: ()=> showDialog(
+                              context: context,
+                              builder: (context) => ConfirmDialog(
+                                actionText: 'EXIT',
+                                title: 'EXIT SESSION?',
+                                subtitle:
+                                    'Your Zikr in this session will not be saved.',
+                                onConfirm: () => Navigator.pop(context),
+                              ),
+                            ),
+
+                          
                           child: Icon(
                             Icons.arrow_back_ios_new_rounded,
                             color: Colors.white,
